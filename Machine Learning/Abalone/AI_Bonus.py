@@ -21,9 +21,9 @@ from sklearn.ensemble import GradientBoostingRegressor
 from xgboost.sklearn import XGBRegressor
 
 
-file = open(r"/home/dar4_kamal/Downloads/Abalone/abalone.domain","r").read().splitlines()
+file = open(r"/home/dar4_kamal/Downloads/Machine Learning/Abalone/abalone.domain","r").read().splitlines()
 col_names = [line.split(":")[0] for line in file]
-df = pd.read_csv(r"/home/dar4_kamal/Downloads/Abalone/abalone.data",sep = ",",names=col_names)
+df = pd.read_csv(r"/home/dar4_kamal/Downloads/Machine Learning/Abalone/abalone.data",sep = ",",names=col_names)
 
 def catgorize(x):
     typ = x.dtype
@@ -54,55 +54,44 @@ indexq = [n/100 for n in range(40,71)]
 pdf = pd.DataFrame(index=indexq,columns=["LinregL","D_treeL","extr_treeL","Rnd_forstL","GredBoostL","XGBL"])
 
 start = time.time()
+Linreg =LinearRegression()
+extr_tree =ExtraTreeRegressor()
+D_tree =DecisionTreeRegressor()
+Rnd_forst =RandomForestRegressor()
+GredBoost =GradientBoostingRegressor(max_depth=3)
+XGB =XGBRegressor() 
 
-for n in range(40,71):
-    
-    for i in range(100):
-        
-        x_train,x_test,y_train,y_test = train_test_split(X,Y,train_size = n/100,random_state=i)
-    #    start = time.time()
-        
-        Linreg =LinearRegression()
-        Linreg.fit(x_train,y_train)
-        result_lin = Linreg.predict(x_test)
-        LinregL.append(np.sqrt(mean_squared_error(y_test,result_lin)))
-        
-        extr_tree =ExtraTreeRegressor()
-        extr_tree.fit(x_train,y_train)
-        result_extr_tree = extr_tree.predict(x_test)
-        extr_treeL.append(np.sqrt(mean_squared_error(y_test,result_extr_tree)))
-        
-        D_tree =DecisionTreeRegressor()
-        D_tree.fit(x_train,y_train)
-        result_D_tree = D_tree.predict(x_test)
-        D_treeL.append(np.sqrt(mean_squared_error(y_test,result_D_tree)))
-        
-        Rnd_forst =RandomForestRegressor()
-        Rnd_forst.fit(x_train,y_train)
-        result_Rnd_forst = Rnd_forst.predict(x_test)
-        Rnd_forstL.append(np.sqrt(mean_squared_error(y_test,result_Rnd_forst)))
-        
-        GredBoost =GradientBoostingRegressor()
-        GredBoost.fit(x_train,y_train)
-        result_GredBoost = GredBoost.predict(x_test)
-        GredBoostL.append(np.sqrt(mean_squared_error(y_test,result_GredBoost)))
-        
-        XGB =XGBRegressor()
-        XGB.fit(x_train,y_train)
-        result_XGB = XGB.predict(x_test)
-        XGBL.append(np.sqrt(mean_squared_error(y_test,result_XGB)))
-        
-    #    end = time.time()
-    #    tim.append(end-start)
-    #    rnd.append(i)
-    #    RMSE.append(np.sqrt(mean_squared_error(y_test,result)))
-        
-#        print(i)
-    pdf.iloc[n-40,:] = np.array([min(LinregL),min(D_treeL),min(extr_treeL),min(Rnd_forstL),min(GredBoostL),min(XGBL)])
+x_train,x_test,y_train,y_test = train_test_split(X,Y,train_size = .333,random_state=42)
+
+Linreg.fit(x_train,y_train)
+result_lin = Linreg.predict(x_test)
+LinregL.append(np.sqrt(mean_squared_error(y_test,result_lin)))
+
+
+extr_tree.fit(x_train,y_train)
+result_extr_tree = extr_tree.predict(x_test)
+extr_treeL.append(np.sqrt(mean_squared_error(y_test,result_extr_tree)))
+
+
+D_tree.fit(x_train,y_train)
+result_D_tree = D_tree.predict(x_test)
+D_treeL.append(np.sqrt(mean_squared_error(y_test,result_D_tree)))
+
+
+Rnd_forst.fit(x_train,y_train)
+result_Rnd_forst = Rnd_forst.predict(x_test)
+Rnd_forstL.append(np.sqrt(mean_squared_error(y_test,result_Rnd_forst)))
+
+
+GredBoost.fit(x_train,y_train)
+result_GredBoost = GredBoost.predict(x_test)
+GredBoostL.append(np.sqrt(mean_squared_error(y_test,result_GredBoost)))
+
+XGB.fit(x_train,y_train)
+result_XGB = XGB.predict(x_test)
+XGBL.append(np.sqrt(mean_squared_error(y_test,result_XGB)))
+
 end = time.time()
-
-#min_rnd = rnd.index(RMSE.index(min(RMSE)))
-#print("avg is :",sum(RMSE)/len(RMSE),"min",min(RMSE)," at random :",min_rnd," duration :",min(tim))
 
 print("Linear_regression err :            ",min(LinregL))
 print("Extra_tree_regression err :        ",min(extr_treeL))
@@ -112,9 +101,3 @@ print("Gradient_Boosting_Regression err : ",min(GredBoostL))
 print("XGBoost_regression err :           ",min(XGBL))
 
 print("Duration : ",end-start)
-#==============================================================================
-# als = np.array([LinregL,extr_treeL,D_treeL,Rnd_forstL,GredBoostL,XGBL])
-# outlist = ["LinregL","extr_treeL","D_treeL","Rnd_forstL","GredBoostL","XGBL"]
-# xxx = pd.DataFrame(als)
-# xxx.to_csv(r"any.csv")
-#==============================================================================
